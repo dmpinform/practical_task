@@ -1,1 +1,1 @@
-# practical_task
+# python -m pytest . -vv

@@ -1,3 +1,3 @@
-from .rates import ExchangeRate
+from .response import ExchangeRate
 
 __all__ = ('ExchangeRate',)

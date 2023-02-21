@@ -3,9 +3,9 @@ from datetime import date
 from enum import Enum
 from typing import List
 
-from package.stock_market import interfaces
-from package.stock_market.adapters.exchangerate.dto import RequestParams
-from package.stock_market.constants import Currency
+from stock_market import interfaces
+from stock_market.adapters.exchangerate.dto import RequestParams
+from stock_market.constants import Currency
 
 
 class ExchangeRateParams(interfaces.Params):

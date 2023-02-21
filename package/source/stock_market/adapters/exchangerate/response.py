@@ -1,12 +1,12 @@
 from typing import Iterator
 
-from package.stock_market.adapters.base.response import ResponseBase
-from package.stock_market.adapters.exchangerate.params import ExchangeRateParams
-from package.stock_market.adapters.exchangerate.settings import (
+from stock_market.adapters.base.response import ResponseBase
+from stock_market.adapters.exchangerate.params import ExchangeRateParams
+from stock_market.adapters.exchangerate.settings import (
     EXCHANGERATE_URI,
     NODE_RATES,
 )
-from package.stock_market.dto import Rate
+from stock_market.dto import Rate
 
 
 class ExchangeRate(ResponseBase):

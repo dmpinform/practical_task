@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 
-from package.stock_market.constants import Currency
+from stock_market.constants import Currency
 
 
 @dataclass

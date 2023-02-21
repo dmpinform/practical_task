@@ -3,7 +3,7 @@ from typing import Any, Iterator, Mapping
 
 import requests
 
-from package.stock_market import interfaces
+from stock_market import interfaces
 
 
 class ResponseBase(interfaces.Response):

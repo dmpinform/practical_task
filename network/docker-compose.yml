@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  main-web-app:
+    build:
+      context: ./main
+      dockerfile: ./Dockerfile
+    ports:
+      - "5500:5500"
+    networks:
+      - service1
+      - service2
+  one-web-app:
+    build:
+      context: ./one
+      dockerfile: ./Dockerfile
+    ports:
+      - "5550:5550"
+    networks:
+      - service1
+  two-web-app:
+    build:
+      context: ./two
+      dockerfile: ./Dockerfile
+    ports:
+      - "5555:5555"
+    networks:
+      - service2
+networks:
+  service1:
+  service2:

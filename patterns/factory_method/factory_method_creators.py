@@ -1,4 +1,4 @@
-# Пример фабричного метода с внедренным шаблонным методом
+# Пример фабричного метода
 
 from abc import ABC, abstractmethod
 
@@ -13,19 +13,19 @@ class Document(ABC):
 class DocumentPdf(Document):
 
     def generate(self) -> str:
-        return 'PDF'
+        return 'DOCUMENT PDF'
 
 
 class DocumentExcel(Document):
 
     def generate(self) -> str:
-        return 'EXCEL'
+        return 'DOCUMENT EXCEL'
 
 
 class DocumentWord(Document):
 
     def generate(self) -> str:
-        return 'WORD'
+        return 'DOCUMENT WORD'
 
 
 class CreatorDocument(ABC):
@@ -65,23 +65,3 @@ def client_code(creator_document: CreatorDocument):
 client_code(CreatorDocumentPdf())
 client_code(CreatorDocumentExcel())
 client_code(CreatorDocumentWord())
-
-
-# Пример c фабричного метода с виртуальным(обобщенным конструктором)
-def CreatorDocumentVirtualConstructor(type_doc: str) -> Document:
-    if type_doc == 'EXCEL':
-        return DocumentExcel()
-    if type_doc == 'WORD':
-        return DocumentWord()
-    if type_doc == 'PDF':
-        return DocumentPdf()
-
-
-def client_code(doc_type: str):
-    document = CreatorDocumentVirtualConstructor(doc_type)
-    print(document.generate())
-
-
-client_code('EXCEL')
-client_code('WORD')
-client_code('PDF')

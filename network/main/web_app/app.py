@@ -4,9 +4,8 @@ from flask import Flask
 app = Flask(__name__)
 
 HOSTS = [
-    'http://one-web-app:5550/',
-    'http://two-web-app:5555/',
     'http://one-web-app:5550/ping',
+    'http://two-web-app:5555/ping',
 ]
 
 

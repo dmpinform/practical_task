@@ -6,18 +6,18 @@ app = Flask(__name__)
 
 @app.route('/')
 def services_network():
-    return 'Доступен'
+    return batch_ping()
 
 
 HOSTS = [
-    'http://two-web-app:5555/',
+    'http://two-web-app:5555/ping',
     'http://main-web-app:5500/ping',
 ]
 
 
 @app.get('/ping')
 def services_network_ping():
-    return batch_ping()
+    return 'Доступен'
 
 
 def batch_ping():

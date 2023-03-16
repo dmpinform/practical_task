@@ -1,10 +1,14 @@
 from urllib import parse
 
 import requests
+from constants import API_USERINFO, SCOPE_USERINFO_PROFILE
 from flask import Flask, redirect, request
 from requests.auth import HTTPBasicAuth
+from settings import Credential
 
 app = Flask(__name__)
+
+credential = Credential()
 
 
 @app.route('/')
@@ -15,13 +19,13 @@ def login():
 def get_authorization_url():
     req = requests.models.PreparedRequest()
     params = {
-        'client_id': CLIENT_ID,
-        'redirect_uri': REDIRECT_URL,
-        'scope': SCOPE,
-        'state': STATE,
+        'client_id': credential.CLIENT_ID,
+        'redirect_uri': credential.REDIRECT_URL,
+        'scope': SCOPE_USERINFO_PROFILE,
+        'state': credential.STATE,
         'response_type': 'code',
     }
-    req.prepare_url(AUTH_URI, params)
+    req.prepare_url(credential.AUTH_URI, params)
     return req.url
 
 
@@ -30,7 +34,7 @@ def callback_auth_code():
     params = get_params_url(request.url)
     code = params['code'][0]
     state = params['state'][0]
-    if state == STATE:
+    if state == credential.STATE:
         token_info = get_token_info(code)
         token = token_info['access_token']
         return get_user_profile(token)
@@ -40,7 +44,7 @@ def callback_auth_code():
 def get_user_profile(token):
     headers = {'Authorization': 'Bearer {}'.format(token)}
     response = requests.get(
-        url='https://www.googleapis.com/oauth2/v1/userinfo',
+        url=API_USERINFO,
         headers=headers,
     )
     return response.json()
@@ -55,18 +59,18 @@ def get_token_info(code: str):
     params = {
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': REDIRECT_URL,
+        'redirect_uri': credential.REDIRECT_URL,
         'prompt': 'consent',
         'access_type': 'offline',
     }
     return requests.post(
-        url=TOKEN_URI,
+        url=credential.TOKEN_URI,
         params=params,
         headers={
             'content-type': 'application/x-www-form-urlencoded'
         },
         auth=HTTPBasicAuth(
-            CLIENT_ID,
-            CLIENT_SECRET,
+            credential.CLIENT_ID,
+            credential.CLIENT_SECRET,
         ),
     ).json()

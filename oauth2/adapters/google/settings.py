@@ -8,3 +8,6 @@ class Credential(BaseSettings):
     CLIENT_SECRET: str
     REDIRECT_URL: str
     STATE: str
+
+    class Config:
+        env_prefix = 'GOOGLE_'

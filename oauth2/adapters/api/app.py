@@ -26,6 +26,11 @@ class App(Flask):
         )
 
         self.add_url_rule(
-            '/profile',
-            view_func=auth_point.get_user_profile,
+            '/oauth2/callback/vk',
+            view_func=auth_point.callback_auth_code,
+        )
+
+        self.add_url_rule(
+            '/start',
+            view_func=auth_point.get_start_api,
         )

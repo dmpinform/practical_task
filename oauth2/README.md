@@ -1,5 +1,25 @@
-## Пример авторизации и вызова google API.
-### Полезные ссылки
+## Пример авторизации "auth code flow" и вызова google API и VK API.
+- Запускается api указанный по умолчанию, токен сохраняется в сессии Flask 
+### VK
+- нужно зарегистрировать приложение в vk как сайт
+- получить client_id и client_secret
+- добавить redirect_url (можно локальный)
+- авторизация "code flow" очень ограничена в правах, в отличии от "implict flow"
+```
+python -m gunicorn oauth2.api_vk:app
+```
+#### Полекзные ссылки VK
+https://dev.vk.com/api/access-token/authcode-flow-user
+***
+### GOOGLE
+- нужно зарегистрировать приложение в google как web application
+- получить client_id и client_secret
+- добавить redirect_url (можно локальный)
+```
+python -m gunicorn oauth2.api_google:app
+```
+
+#### Полезные ссылки GOOGLE
 Сброс разрешений чтобы получить рефреш токен снова
 https://myaccount.google.com/u/1/permissions
 

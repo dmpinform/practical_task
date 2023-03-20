@@ -18,3 +18,18 @@ class TokenRequest(ABC):
     @abstractmethod
     def get_auth_data(self, code: str) -> AuthData:
         ...
+
+
+class Authorization(ABC):
+
+    @abstractmethod
+    def get_auth_request(self) -> AuthRequest:
+        ...
+
+    @abstractmethod
+    def get_token_request(self) -> TokenRequest:
+        ...
+
+    @abstractmethod
+    def get_request_state(self) -> str:
+        ...

@@ -1,13 +1,13 @@
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Dict
 
 import requests
 
-from oauth2.application import dto, interfaces
+from oauth2.application import dto
 
 
 @dataclass
-class AuthRequest(interfaces.AuthRequest):
+class AuthRequest:
     auth_url: str
     params: dto.AuthRequestParams
 
@@ -15,15 +15,12 @@ class AuthRequest(interfaces.AuthRequest):
         self.auth_link = requests.models.PreparedRequest()
 
     def get_link(self) -> str:
-        self.auth_link.prepare_url(self.auth_url, asdict(self.params))
+        self.auth_link.prepare_url(self.auth_url, self.params.as_dict())
         return self.auth_link.url
-
-    def get_request_state(self) -> str:
-        return self.params.state
 
 
 @dataclass
-class TokenRequest(interfaces.TokenRequest):
+class TokenRequest:
     token_uri: str
     params: dto.TokenRequestParams
 

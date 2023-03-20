@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from oauth2.application import dto
 from oauth2.application.dto import AuthData
 
 
@@ -32,4 +33,12 @@ class Authorization(ABC):
 
     @abstractmethod
     def get_request_state(self) -> str:
+        ...
+
+    @abstractmethod
+    def get_auth_request_params(self) -> dto.AuthRequestParams:
+        ...
+
+    @abstractmethod
+    def get_token_request_params(self) -> dto.TokenRequestParams:
         ...

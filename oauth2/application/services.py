@@ -13,3 +13,6 @@ class Authorization:
 
     def get_user_cred(self, code: str) -> dto.AuthData:
         return self.token_request.get_auth_data(code)
+
+    def get_request_state(self) -> str:
+        return self.auth_request.get_request_state()

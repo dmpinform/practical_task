@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Optional
 
 
@@ -14,10 +14,19 @@ class AuthRequestParams:
 @dataclass
 class TokenRequestParams:
     redirect_uri: str
+    client_id: str
+    client_secret: str
     grant_type: str = 'authorization_code'
     prompt: str = 'consent'
     access_type: str = 'offline'
-    code: Optional[str] = None
+    code: str = field(init=False)
+
+    def set_code(self, code: str) -> 'TokenRequestParams':
+        self.code = code
+        return self
+
+    def as_dict(self):
+        return asdict(self)
 
 
 @dataclass

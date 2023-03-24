@@ -14,8 +14,8 @@ class Authorization:
     def get_user_cred(self, code: str) -> dto.AuthData:
         return self.requests_point.get_token_request().get_auth_data(code)
 
-    def get_request_state(self) -> str:
-        return self.requests_point.get_request_state()
+    def is_valid_state(self, state: str) -> bool:
+        return self.requests_point.get_request_state() == state
 
     def get_start_api(self):
         return self.start_api

@@ -15,6 +15,7 @@ https://dev.vk.com/api/access-token/authcode-flow-user
 - нужно зарегистрировать приложение в google как web application
 - получить client_id и client_secret
 - добавить redirect_url (можно локальный)
+- добавить тестовых пользователей
 ```
 python -m gunicorn oauth2.api_google:app
 ```

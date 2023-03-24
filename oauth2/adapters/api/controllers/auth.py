@@ -17,7 +17,7 @@ class AuthPoint:
         code = request.args.get('code')
         state = request.args.get('state')
 
-        if state == self.auth_service.get_request_state():
+        if self.auth_service.is_valid_state(state):
             user_cred = self.auth_service.get_user_cred(code)
             session['access_token'] = user_cred.access_token
             return redirect(url_for('get_start_api'))

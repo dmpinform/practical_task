@@ -10,9 +10,6 @@ class AuthRequest(ABC):
     def get_link(self) -> str:
         ...
 
-    def get_request_state(self) -> str:
-        ...
-
 
 class TokenRequest(ABC):
 

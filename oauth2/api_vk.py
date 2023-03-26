@@ -17,7 +17,7 @@ class Adapter:
 class Service:
     auth_service = services.Authorization(
         requests_point=Adapter.auth,
-        start_api=constants.API_STATUS_VK,
+        start_api=constants.API_USERINFO_VK,
     )
 
 

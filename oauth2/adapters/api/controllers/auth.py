@@ -26,7 +26,7 @@ class AuthPoint:
 
     def get_start_api(self):
         response = requests.get(
-            url=self.auth_service.start_api,
+            url=self.auth_service.get_start_api(),
             headers=self._get_header_auth(),
         )
         return response.json()

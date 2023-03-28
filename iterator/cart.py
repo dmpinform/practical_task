@@ -4,6 +4,7 @@ from iterator.entities import BaseProduct
 
 
 class Cart:
+
     def __init__(self, *product):
         self._cart: List[BaseProduct] = [*product]
         self._pos: int = -1

@@ -1,0 +1,45 @@
+repos:
+  - repo: local
+    hooks:
+      - id: yapf
+        name: yapf
+        language: python
+        entry: yapf
+        args: [-i, -vv]
+        types: [python]
+        additional_dependencies: [toml]
+
+      - id: isort
+        name: isort
+        entry: isort
+        language: python
+        files: "\\.(py)$"
+        args: [--settings-path=pyproject.toml]
+
+      - id: flake8
+        args: # arguments to configure flake8
+          # making isort line length compatible with black
+          - '--max-line-length=80'
+          - '--max-complexity=18'
+          - '--select=B,C,E,F,W,T4,B9'
+          - '--ignore=W503,W504,E126'
+          - '--per-file-ignores=__init__.py:F401'
+        name: flake8
+        entry: flake8
+        language: system
+        types: [python]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-added-large-files
+      - id: check-yaml
+      - id: debug-statements
+      - id: requirements-txt-fixer
+      - id: check-merge-conflict
+      - id: double-quote-string-fixer
+      - id: end-of-file-fixer
+      - id: sort-simple-yaml

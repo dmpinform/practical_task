@@ -9,14 +9,19 @@ class RateFile:
 
     def __init__(self, file_name: str):
         self.file_rates = file_name
+
+    def write(self, rates: List[Rate]):
         if os.path.exists(self.file_rates):
             os.remove(self.file_rates)
 
-    def write(self, rates: List[Rate]):
         with open(self.file_rates, 'a') as _file:
             for rate in rates:
                 record = self._adapt_record(rate)
                 _file.write(record)
+
+    def read(self):
+        with open(self.file_rates, 'r') as _file:
+            _file.read()
 
     @staticmethod
     def _adapt_record(rate):

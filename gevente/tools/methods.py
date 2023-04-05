@@ -18,6 +18,9 @@ class FileIO:
     def write(self, rates: List[Rate]):
         self.RateFile.write(rates)
 
+    def read(self):
+        self.RateFile.read()
+
     def count(self) -> int:
         return self.RateFile.count()
 

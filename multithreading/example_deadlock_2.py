@@ -45,3 +45,18 @@ thread1.join()
 thread2.join()
 
 print('Finished.')
+
+#          A
+#         / \
+# thread2/   \thread1
+#        \   /
+#         \ /
+#          B
+# Thread A is starting...
+# Thread A waiting to acquire lock A.
+# Thread A has acquired lock A, performing some calculation...
+# Thread B is starting...
+# Thread B waiting to acquire lock B.
+# Thread B has acquired lock B, performing some calculation...
+# Thread A waiting to acquire lock B.
+# Thread B waiting to acquire lock A.

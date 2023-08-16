@@ -1,3 +1,4 @@
+import timeit
 from threading import Lock, Thread
 
 lock = Lock()
@@ -25,8 +26,9 @@ thread1 = Thread(target=add_one, args=(lock, ))
 
 thread1.start()
 thread2.start()
-
+start = timeit.default_timer()
 thread1.join()
 thread2.join()
-
+end = timeit.default_timer()
+print(end - start)
 print(x)

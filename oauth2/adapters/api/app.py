@@ -34,3 +34,8 @@ class App(Flask):
             '/start',
             view_func=auth_point.get_start_api,
         )
+
+        self.add_url_rule(
+            '/id_token',
+            view_func=auth_point.get_payload_id_token,
+        )

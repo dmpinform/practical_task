@@ -61,7 +61,10 @@ class TokenRequest(interfaces.TokenRequest):
 
     def get_auth_data(self, code: str) -> dto.AuthData:
         auth_data = self._request_auth_data(code)
-        return dto.AuthData(access_token=auth_data['access_token'])
+        return dto.AuthData(
+            access_token=auth_data['access_token'],
+            id_token=auth_data.get('id_token')
+        )
 
     def _request_auth_data(self, code: str):
         return requests.post(

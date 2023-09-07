@@ -33,3 +33,4 @@ class TokenRequestParams:
 @dataclass
 class AuthData:
     access_token: str
+    id_token: Optional[str]

@@ -20,6 +20,8 @@
   - singltone
   - state
   - strategy
+#### rmq
+- Примеры с rabbit mq
 #### tests:
 - Тесты некоторых модулей
 #### pre-commit:

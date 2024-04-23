@@ -22,6 +22,10 @@
   - strategy
 #### rmq
 - Примеры с rabbit mq
+- Пример STOMP 
+Включить плагин:
+- docker exec 1bb61ad5fc3f rabbitmq-plugins enable rabbitmq_web_stomp
+
 #### tests:
 - Тесты некоторых модулей
 #### pre-commit:

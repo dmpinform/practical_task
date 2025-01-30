@@ -1,5 +1,5 @@
 import settings
-from entities import Base
+from declarative import Base
 
 from sqlalchemy import create_engine
 

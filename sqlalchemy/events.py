@@ -1,9 +1,9 @@
 from typing import List
 
 import constants
-import entities
+import declarative
 import settings
-from entities import Sensor
+from declarative import Sensor
 
 from sqlalchemy import create_engine, event, select, true
 from sqlalchemy.orm import ORMExecuteState, sessionmaker, with_loader_criteria
@@ -69,7 +69,7 @@ def select_sensors_carbon() -> List[Sensor]:
     with Session.begin() as session:
         return session.scalars(
             select(
-                entities.CarbonDioxideSensor,
+                declarative.CarbonDioxideSensor,
             ).execution_options(view_all=False)
         ).all()
 
@@ -78,7 +78,7 @@ def select_sensors_moisture() -> List[Sensor]:
     with Session.begin() as session:
         return session.scalars(
             select(
-                entities.MoistureSensor,
+                declarative.MoistureSensor,
             ).execution_options(view_all=False)
         ).all()
 
@@ -92,5 +92,5 @@ def select_all() -> List[Sensor]:
 
 
 if __name__ == '__main__':
-    sensors: List[entities.Sensor] = select_all()
+    sensors: List[declarative.Sensor] = select_all()
     print(sensors)

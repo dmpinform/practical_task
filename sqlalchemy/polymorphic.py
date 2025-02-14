@@ -1,5 +1,7 @@
+from datetime import datetime
 from typing import List
 
+import constants
 import declarative
 import settings
 from declarative import Sensor
@@ -19,6 +21,7 @@ def add_sensors():
             oxygen_level=1,
             is_active=True,
         )
+
         sensor2 = declarative.CarbonDioxideSensor(
             name='CO2 Sensor 1',
             co2_level=2,
@@ -29,12 +32,8 @@ def add_sensors():
             moisture_level=3,
             is_active=False,
         )
-        sensor4 = declarative.SensorOne(
-            one_level=111,
-        )
-        sensor5 = declarative.SensorTwo(
-            two_level=222,
-        )
+        sensor4 = declarative.SensorOne(one_level=111, )
+        sensor5 = declarative.SensorTwo(two_level=222, )
 
         session.add(sensor1)
         session.add(sensor2)
@@ -47,7 +46,7 @@ def add_sensors():
 
 def select_sensors() -> List[Sensor]:
     with Session.begin() as session:
-        return session.scalars(select(declarative.CarbonDioxideSensor)).all()
+        return session.scalars(select(declarative.Sensor)).all()
 
 
 def select_one_sensors() -> List[declarative.UnionSensors]:
@@ -62,11 +61,13 @@ def select_two_sensors() -> List[declarative.UnionSensors]:
 
 def update_sensor(sensor_id, new_name):
     with Session.begin() as session:
-        sensor = session.execute(select(
-            Sensor,
-        ).filter(
-            Sensor.id == sensor_id,
-        )).first()
+        sensor = session.execute(
+            select(
+                Sensor,
+            ).filter(
+                Sensor.id == sensor_id,
+            )
+        ).first()
 
         if sensor:
             sensor.name = new_name
@@ -77,8 +78,8 @@ def update_sensor(sensor_id, new_name):
 
 
 if __name__ == '__main__':
-    add_sensors()
-    # update_sensor(sensor_id=1, new_name='Updated Oxygen Sensor 1')
+    # add_sensors()
+    #update_sensor(sensor_id=1, new_name='Updated Oxygen Sensor 1')
     print(select_sensors())
     print(select_one_sensors())
     print(select_two_sensors())

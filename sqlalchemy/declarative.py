@@ -1,15 +1,18 @@
 from datetime import datetime
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 import constants
 
 import sqlalchemy.types as types
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, event
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
-    MappedAsDataclass,
+    attribute_keyed_dict,
+    attributes,
+    keyfunc_mapping,
     mapped_column,
+    relationship,
 )
 
 
@@ -19,19 +22,83 @@ class GetValues:
         ...
 
 
-class Base(MappedAsDataclass, DeclarativeBase):
+class Base(DeclarativeBase):
     pass
+
+
+# пример пользовательского типа, как альтернатива enum
+class StringEnum(types.TypeDecorator):
+
+    impl = types.String(32)
+
+    def __init__(self, enum_type, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._enum_type = enum_type
+
+    def process_bind_param(self, value, dialect):
+        return value.value if value is not None else None
+
+    def process_result_value(self, value, dialect):
+        return self._enum_type(value) if value is not None else None
+
+
+class SensorStatusType(StringEnum):
+    cache_ok = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(constants.SensorStatusType, *args, **kwargs)
+
+
+class SensorReadings(Base):
+    __tablename__ = 'sensor_readings'
+
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        autoincrement=True,
+    )
+    read_at: Mapped[datetime]
+    value: Mapped[Optional[float]]
+    status: Mapped[constants.SensorStatusType]
+    id_sensor: Mapped[int] = mapped_column(ForeignKey("sensors.id"))
+    sensor: Mapped["Sensor"] = relationship(back_populates='readings')
+
+    @property
+    def read_key(self) -> Tuple[datetime, SensorStatusType]:
+        return self.read_at, self.status
 
 
 class Sensor(Base):
     __tablename__ = 'sensors'
-
+    TimeLineReadings = (
+        Mapped[Dict[Tuple[datetime, SensorStatusType], "SensorReadings"]]
+    )
     name: Mapped[str]
-    type: Mapped[str] = mapped_column(init=False)
+    type: Mapped[str]
     is_active: Mapped[bool] = mapped_column(insert_default=False)
     id = mapped_column(
-        Integer, primary_key=True, autoincrement=True, init=False
+        Integer,
+        primary_key=True,
+        autoincrement=True,
     )
+    # Маппинг на словарь для быстрого поиска по дате и статусу
+    # Стратегия attribute_keyed_dict
+    readings: TimeLineReadings = relationship(
+        collection_class=attribute_keyed_dict("read_key"),
+        overlaps='readings_id',
+        back_populates='sensor',
+    )
+    # Маппинг на словарь для быстрого поиска ID показания
+    # Стратегия keyfunc_mapping
+    readings_id: Mapped[Dict[int, "SensorReadings"]] = relationship(
+        collection_class=keyfunc_mapping(
+            lambda prop: prop.id,
+        ),
+    # overlaps - устранить предупреждение, что возможны конфликты с readings
+    # приложение само должно гаранитировать, что конфликтов не будет
+        viewonly=True,
+        overlaps='readings'
+    )
+
     __mapper_args__ = {
         'polymorphic_abstract': True,
         'polymorphic_on': 'type',
@@ -43,15 +110,12 @@ class OxygenSensor(Sensor):
 
     oxygen_level: Mapped[float]
     id: Mapped[int] = mapped_column(
-        ForeignKey("sensors.id"), primary_key=True, init=False
+        ForeignKey("sensors.id"),
+        primary_key=True,
     )
-    # readings: Mapped[Optional[List['SensorReadings']]] = relationship(
-    #     'SensorReadings', default_factory=list
-    # )
     __mapper_args__ = {
         'polymorphic_identity': 'oxygen',
     }
-
 
 
 class CarbonDioxideSensor(Sensor, GetValues):
@@ -59,11 +123,9 @@ class CarbonDioxideSensor(Sensor, GetValues):
 
     co2_level: Mapped[float]
     id: Mapped[int] = mapped_column(
-        ForeignKey("sensors.id"), primary_key=True, init=False
+        ForeignKey("sensors.id"),
+        primary_key=True,
     )
-    # readings: Mapped[Optional[List['SensorReadings']]] = relationship(
-    #     'SensorReadings', default_factory=list
-    # )
     __mapper_args__ = {
         'polymorphic_identity': 'carbon',
     }
@@ -77,11 +139,9 @@ class MoistureSensor(Sensor, GetValues):
 
     moisture_level: Mapped[float]
     id: Mapped[int] = mapped_column(
-        ForeignKey("sensors.id"), primary_key=True, init=False
+        ForeignKey("sensors.id"),
+        primary_key=True,
     )
-    # readings: Mapped[Optional[List['SensorReadings']]] = relationship(
-    #     'SensorReadings', default_factory=list
-    # )
     __mapper_args__ = {
         'polymorphic_identity': 'moisture',
     }
@@ -93,9 +153,10 @@ class MoistureSensor(Sensor, GetValues):
 class UnionSensors(Base):
     __tablename__ = 'union_sensors'
 
-    type: Mapped[str] = mapped_column(init=False)
+    type: Mapped[str]
     id: Mapped[int] = mapped_column(
-        primary_key=True, autoincrement=True, init=False
+        primary_key=True,
+        autoincrement=True,
     )
     __mapper_args__ = {
         'polymorphic_on': 'type',
@@ -117,35 +178,10 @@ class SensorTwo(UnionSensors):
     }
 
 
-class StringEnum(types.TypeDecorator):
-
-    impl = types.String(32)
-
-    def __init__(self, enum_type, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._enum_type = enum_type
-
-    def process_bind_param(self, value, dialect):
-        return value.value if value is not None else None
-
-    def process_result_value(self, value, dialect):
-        return self._enum_type(value) if value is not None else None
-
-
-# class SensorStatusType(StringEnum):
-#     cache_ok = True
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(constants.SensorStatusType, *args, **kwargs)
-#
-#
-# class SensorReadings(Base):
-#     __tablename__ = 'sensor_readings'
-#
-#     id: Mapped[int] = mapped_column(
-#         primary_key=True, autoincrement=True, init=False
-#     )
-#     read_at: Mapped[datetime]
-#     value: Mapped[Optional[float]]
-#     status: Mapped[constants.SensorStatusType]
-#     id_sensor: Mapped[int] = mapped_column(ForeignKey("sensors.id"), init=False)
+# Для поддержки согласованности объектов
+# @event.listens_for(SensorReadings.read_key, "set")
+# def set_item(obj, value, previous, initiator):
+#     if obj.sensor is not None:
+#         previous = None if previous == attributes.NO_VALUE else previous
+#         obj.sensor.readings[value] = obj
+#         obj.sensor.readings.pop(previous)

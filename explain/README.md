@@ -6,6 +6,9 @@
 ### Оптимизация производительности запросов:
 - https://postgrespro.ru/docs/postgrespro/9.5/performance-tips
 
+### Журналирование (можно оптимизировать)
+- https://postgrespro.ru/docs/postgrespro/9.5/runtime-config-wal
+
 ### Настройка сервера - планирование запроса:
 - https://postgrespro.ru/docs/postgrespro/9.5/runtime-config-query
 
